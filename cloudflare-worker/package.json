@@ -21,6 +21,6 @@
     "wrangler": "^4.156.0"
   },
   "dependencies": {
-    "@cfworker/json-schema": "^4.1.1"
+    "@cfworker/json-schema": "^4.1.4"
   }
 }
