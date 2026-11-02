@@ -3911,5 +3911,164 @@
     "authorizationServers": [
       "https://auth.qencode.com/"
     ]
+  },
+  {
+    "serverId": "portoperatingsystem",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "stateless",
+    "checkedAt": "2026-10-27T19:11:09.396Z",
+    "message": "Negotiated stateless MCP 2026-07-28 at https://api.portoperatingsystem.com/mcp; detected transport streamable-http; authentication oauth",
+    "validatedUrl": "https://api.portoperatingsystem.com/mcp",
+    "protocolVersion": "2026-07-28",
+    "authorizationServers": [
+      "https://auth.portoperatingsystem.com"
+    ]
+  },
+  {
+    "serverId": "the-old-ways",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "none",
+    "requiresOAuth": false,
+    "protocolEra": "stateful",
+    "checkedAt": "2026-10-26T18:51:12.468Z",
+    "message": "Negotiated stateful MCP 2025-11-25 at https://mcp.theoldways.co/mcp; detected transport streamable-http; authentication none",
+    "validatedUrl": "https://mcp.theoldways.co/mcp",
+    "protocolVersion": "2025-11-25"
+  },
+  {
+    "serverId": "borghq-odin",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-10-27T14:36:00.081Z",
+    "message": "Authentication challenge at https://odin.borghq.io/api/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://odin.borghq.io/api/mcp",
+    "authorizationServers": [
+      "https://odin.borghq.io"
+    ]
+  },
+  {
+    "serverId": "ecommercedataapi",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-10-28T00:23:55.231Z",
+    "message": "Authentication challenge at https://ecommercedataapi.com/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://ecommercedataapi.com/mcp",
+    "authorizationServers": [
+      "https://ecommercedataapi.com/api/auth"
+    ]
+  },
+  {
+    "serverId": "alfie-everyday",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "none",
+    "requiresOAuth": false,
+    "protocolEra": "stateless",
+    "checkedAt": "2026-10-27T19:59:36.268Z",
+    "message": "Negotiated stateless MCP 2026-07-28 at https://everyday.alfie.family/mcp; detected transport streamable-http; authentication none",
+    "validatedUrl": "https://everyday.alfie.family/mcp",
+    "protocolVersion": "2026-07-28"
+  },
+  {
+    "serverId": "futureinfra",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-10-28T09:42:36.113Z",
+    "message": "Authentication challenge at https://futureinfra.ai/v1/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://futureinfra.ai/v1/mcp",
+    "authorizationServers": [
+      "https://futureinfra.ai"
+    ]
+  },
+  {
+    "serverId": "tasarim",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "none",
+    "requiresOAuth": false,
+    "protocolEra": "stateful",
+    "checkedAt": "2026-10-30T09:48:11.277Z",
+    "message": "Negotiated stateful MCP 2025-11-25 at https://tasarim.ai/api/mcp; detected transport streamable-http; authentication none",
+    "validatedUrl": "https://tasarim.ai/api/mcp",
+    "protocolVersion": "2025-11-25"
+  },
+  {
+    "serverId": "neverapply",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-10-29T04:13:24.450Z",
+    "message": "Authentication challenge at https://neverapply.co/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://neverapply.co/mcp",
+    "authorizationServers": [
+      "https://neverapply.co"
+    ]
+  },
+  {
+    "serverId": "grigora",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-10-30T10:05:13.068Z",
+    "message": "Authentication challenge at https://mcp.grigora.co/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://mcp.grigora.co/mcp",
+    "authorizationServers": [
+      "https://mcp.grigora.co/"
+    ]
+  },
+  {
+    "serverId": "agentweb",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "none",
+    "requiresOAuth": false,
+    "protocolEra": "stateful",
+    "checkedAt": "2026-10-28T14:39:06.634Z",
+    "message": "Negotiated stateful MCP 2025-06-18 at https://api.agentweb.live/mcp; detected transport streamable-http; authentication none",
+    "validatedUrl": "https://api.agentweb.live/mcp",
+    "protocolVersion": "2025-06-18"
+  },
+  {
+    "serverId": "cadprops",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "none",
+    "requiresOAuth": false,
+    "protocolEra": "stateful",
+    "checkedAt": "2026-11-01T07:34:37.416Z",
+    "message": "Negotiated stateful MCP 2025-11-25 at https://www.cadprops.com/api/v1/mcp; detected transport streamable-http; authentication none",
+    "validatedUrl": "https://www.cadprops.com/api/v1/mcp",
+    "protocolVersion": "2025-11-25"
+  },
+  {
+    "serverId": "mallary",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-11-02T02:18:30.406Z",
+    "message": "Authentication challenge at https://mallary.ai/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://mallary.ai/mcp",
+    "authorizationServers": [
+      "https://auth.mallary.ai"
+    ]
   }
 ]
