@@ -4056,5 +4056,19 @@
     "message": "Negotiated stateful MCP 2025-11-25 at https://www.cadprops.com/api/v1/mcp; detected transport streamable-http; authentication none",
     "validatedUrl": "https://www.cadprops.com/api/v1/mcp",
     "protocolVersion": "2025-11-25"
+  },
+  {
+    "serverId": "mallary",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "oauth",
+    "requiresOAuth": true,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-11-02T02:18:30.406Z",
+    "message": "Authentication challenge at https://mallary.ai/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication oauth",
+    "validatedUrl": "https://mallary.ai/mcp",
+    "authorizationServers": [
+      "https://auth.mallary.ai"
+    ]
   }
 ]
