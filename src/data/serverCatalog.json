@@ -12777,5 +12777,30 @@
     "logoRetrievedAt": "2026-11-02",
     "logoLicenseNote": "Mallary mark from the publisher's brand asset page on mallary.ai, as stated by the submitter; trademark rights remain with the publisher.",
     "homepageUrl": "https://mallary.ai/social-media-mcp-server"
+  },
+  {
+    "id": "macalculatriceenligne",
+    "name": "MaCalculatrice (macalc)",
+    "url": "https://macalculatriceenligne.com/api/mcp",
+    "browserAccess": "proxy-required",
+    "description": "Deterministic calculators from macalculatriceenligne.com as MCP tools: tax, salary, real estate, maths, health and unit conversions for France and other French-speaking countries. Each result links to the related page of the site. No authentication.",
+    "category": "Reference",
+    "tags": [
+      "reference",
+      "community-submission",
+      "no-auth"
+    ],
+    "listingSource": {
+      "kind": "community-submission",
+      "url": "https://macalculatriceenligne.com/mcp/"
+    },
+    "transport": "streamable-http",
+    "requiresOAuth": false,
+    "authType": "none",
+    "logoUrl": "/server-logos/macalculatriceenligne.svg",
+    "logoSourceKind": "generated-fallback",
+    "logoRetrievedAt": "2026-11-03",
+    "logoLicenseNote": "Locally generated MM monogram for a community submission; it is not an official MaCalculatrice (macalc) mark.",
+    "homepageUrl": "https://macalculatriceenligne.com/mcp/"
   }
 ]
