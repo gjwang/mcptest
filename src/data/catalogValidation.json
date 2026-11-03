@@ -4070,5 +4070,20 @@
     "authorizationServers": [
       "https://auth.mallary.ai"
     ]
+  },
+  {
+    "serverId": "menloinsurance",
+    "status": "online",
+    "transport": "streamable-http",
+    "authType": "none",
+    "requiresOAuth": false,
+    "protocolEra": "stateless",
+    "checkedAt": "2026-11-03T23:02:05.510Z",
+    "message": "Negotiated stateless MCP 2026-07-28 at https://www.menloinsurance.com/mcp; detected transport streamable-http; authentication none",
+    "validatedUrl": "https://www.menloinsurance.com/mcp",
+    "protocolVersion": "2026-07-28",
+    "authorizationServers": [
+      "https://www.menloinsurance.com"
+    ]
   }
 ]

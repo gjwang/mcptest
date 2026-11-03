@@ -12777,5 +12777,30 @@
     "logoRetrievedAt": "2026-11-02",
     "logoLicenseNote": "Mallary mark from the publisher's brand asset page on mallary.ai, as stated by the submitter; trademark rights remain with the publisher.",
     "homepageUrl": "https://mallary.ai/social-media-mcp-server"
+  },
+  {
+    "id": "menloinsurance",
+    "name": "Menlo Insurance MCP",
+    "url": "https://www.menloinsurance.com/mcp",
+    "browserAccess": "proxy-required",
+    "description": "Connect AI assistants to Menlo insurance applications, document attachments, carrier quote requests and follow-ups. Public discovery is available without credentials; private customer actions require OAuth authorization and quote consent. Insurance purchases are a separate broker-reviewed step.",
+    "category": "Finance",
+    "tags": [
+      "finance",
+      "community-submission",
+      "no-auth"
+    ],
+    "listingSource": {
+      "kind": "community-submission",
+      "url": "https://www.menloinsurance.com/ai-assistants"
+    },
+    "transport": "streamable-http",
+    "requiresOAuth": false,
+    "authType": "none",
+    "logoUrl": "/server-logos/menloinsurance.svg",
+    "logoSourceKind": "generated-fallback",
+    "logoRetrievedAt": "2026-11-03",
+    "logoLicenseNote": "Locally generated MI monogram for a community submission; it is not an official Menlo Insurance MCP mark.",
+    "homepageUrl": "https://www.menloinsurance.com/ai-assistants"
   }
 ]
