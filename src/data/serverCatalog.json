@@ -12788,15 +12788,15 @@
     "tags": [
       "finance",
       "community-submission",
-      "no-auth"
+      "oauth"
     ],
     "listingSource": {
-      "kind": "community-submission",
+      "kind": "publisher",
       "url": "https://www.menloinsurance.com/ai-assistants"
     },
     "transport": "streamable-http",
-    "requiresOAuth": false,
-    "authType": "none",
+    "requiresOAuth": true,
+    "authType": "oauth",
     "logoUrl": "/server-logos/menloinsurance.svg",
     "logoSourceKind": "generated-fallback",
     "logoRetrievedAt": "2026-11-03",
