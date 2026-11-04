@@ -13,6 +13,46 @@ const statuses = {
 } as const;
 
 describe('public-safe capability inventory', () => {
+  it('preserves basic tax prose across capability fields while redacting Basic credentials', () => {
+    const description = 'Calculate tax with the basic personal amount; get basic information.';
+    const inventory = createCapabilityInventory({
+      testedEndpoint: 'https://example.com/mcp',
+      route: 'direct',
+      authentication: 'unauthenticated',
+      statuses,
+      discovered: {
+        tools: [{ name: 'tax', description, inputSchema: {
+          properties: { income: { type: 'number', description } },
+        } }],
+        resources: [{ name: 'policy', description }],
+        resourceTemplates: [{ name: 'template', description }],
+        prompts: [{ name: 'tax', description, arguments: [{ name: 'income', description }] }],
+      },
+    });
+    expect(inventory.tools.items[0].description).toBe(description);
+    expect(inventory.tools.items[0].input[0].description).toBe(description);
+    expect(inventory.resources.items[0].description).toBe(description);
+    expect(inventory.resourceTemplates.items[0].description).toBe(description);
+    expect(inventory.prompts.items[0].description).toBe(description);
+    expect(inventory.prompts.items[0].arguments[0].description).toBe(description);
+    expect(validateCapabilityInventory(inventory)).toEqual(inventory);
+
+    for (const credential of ['dXNlcjpwYXNz', 'dXNlcjo=', 'OnBhc3M=', 'dXNlcjpwYQ']) {
+      const unsafe = structuredClone(inventory);
+      unsafe.tools.items[0].description = `Use Basic ${credential}`;
+      expect(() => validateCapabilityInventory(unsafe)).toThrow('unsafe or non-canonical');
+      const redacted = createCapabilityInventory({
+        testedEndpoint: 'https://example.com/mcp',
+        route: 'direct',
+        authentication: 'unauthenticated',
+        statuses,
+        discovered: { tools: [{ name: 'tax', description: `Use Basic ${credential}` }] },
+      });
+      expect(redacted.tools.items[0].description).toBe('Use Basic [REDACTED]');
+      expect(validateCapabilityInventory(redacted)).toEqual(redacted);
+    }
+  });
+
   it('retains only the closed safe projection in deterministic order', () => {
     const inventory = createCapabilityInventory({
       observedAt: '2026-08-17T22:00:00.000Z',

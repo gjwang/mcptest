@@ -11847,7 +11847,7 @@
         },
         {
           "name": "calculate_canada_federal_tax",
-          "description": "Calculate Canadian federal income tax (CRA) with the basic [REDACTED] amount credited at the lowest rate (before any Quebec abatement). Returns: {income_cad, basic_personal_amount, basic_personal_credit, taxable_income, federal_tax, effective_rate_pct, marginal_rate_pct, ...}. See list_bundles for related 'finance-afrique-quebec' calculators.",
+          "description": "Calculate Canadian federal income tax (CRA) with the basic personal amount credited at the lowest rate (before any Quebec abatement). Returns: {income_cad, basic_personal_amount, basic_personal_credit, taxable_income, federal_tax, effective_rate_pct, marginal_rate_pct, ...}. See list_bundles for related 'finance-afrique-quebec' calculators.",
           "input": [
             {
               "name": "income_cad",
