@@ -37,15 +37,26 @@ export interface CreateCapabilityInventoryInput {
 
 const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f]/g;
 const SECRET_ASSIGNMENT = /\b(authorization|cookie|password|passwd|secret|client[_ -]?secret|access[_ -]?token|refresh[_ -]?token|id[_ -]?token|api[_ -]?key|private[_ -]?key|credential|session|token)\s*[:=]\s*(?:\[REDACTED\]|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|[^\s,;&]+)/gi;
-/** Basic credentials encode a user/password pair; ordinary prose after "basic" is public. */
+const decodesToUserPass = (candidate: string): boolean => {
+  try {
+    return atob(candidate.replace(/-/g, '+').replace(/_/g, '/')).includes(':');
+  } catch {
+    return false;
+  }
+};
+/**
+ * Basic credentials encode a user/password pair; ordinary prose after "basic" is public.
+ * The token and each prefix before `.`, `_`, `~` or `-` are decoded (standard and URL-safe), so
+ * trailing punctuation or a suffix cannot hide a credential.
+ */
 export const redactCapabilityAuthValues = (value: string): string => value
   .replace(/\b(Bearer)\s+[A-Za-z0-9._~+/=-]+/gi, '$1 [REDACTED]')
-  .replace(/\bBasic\s+([A-Za-z0-9+/]+={0,2})(?![A-Za-z0-9._~+/=-])/gi, (match, credential: string) => {
-    try {
-      return atob(credential).includes(':') ? `${match.slice(0, 5)} [REDACTED]` : match;
-    } catch {
-      return match;
-    }
+  .replace(/\b(Basic)\s+([A-Za-z0-9._~+/=-]+)/gi, (match, scheme: string, token: string) => {
+    const credential = token.replace(/\.+$/, '');
+    const prefixes = [...credential.matchAll(/[._~-]/g)].map(({ index }) => credential.slice(0, index));
+    return [credential, ...prefixes].some(decodesToUserPass)
+      ? `${scheme} [REDACTED]${token.slice(credential.length)}`
+      : match;
   });
 const JWT_VALUE = /\beyJ[A-Za-z0-9_-]*\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g;
 const STANDALONE_CREDENTIAL = /(?<![A-Za-z0-9])(?:gh[pousr]_[A-Za-z0-9]{20,255}|github_pat_[A-Za-z0-9_]{20,255}|(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{16,255}|sk-(?:proj-)?[A-Za-z0-9_-]{20,255}|(?:AKIA|ASIA)[A-Z0-9]{16}|AIza[A-Za-z0-9_-]{35}|xox(?:b|p|a|r|s)-[A-Za-z0-9-]{20,255}|npm_[A-Za-z0-9]{20,255}|glpat-[A-Za-z0-9_-]{20,255}|hf_[A-Za-z0-9]{20,255})(?![A-Za-z0-9])/g;

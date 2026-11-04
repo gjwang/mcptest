@@ -53,6 +53,47 @@ describe('public-safe capability inventory', () => {
     }
   });
 
+  it('redacts Basic credentials followed by punctuation or encoded URL-safe', () => {
+    const urlSafe = btoa('user:pa\u00fb\u00ff').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    expect(urlSafe).toMatch(/[-_]/);
+    for (const [description, expected] of [
+      ['Use Basic dXNlcjpwYXNz.', 'Use Basic [REDACTED].'],
+      ['Example header: Basic dXNlcjpwYXNz... then call it.', 'Example header: Basic [REDACTED]... then call it.'],
+      ['Use Basic dXNlcjpwYXNz-', 'Use Basic [REDACTED]'],
+      ['Use Basic dXNlcjpwYXNz-suffix now', 'Use Basic [REDACTED] now'],
+      ['Use Basic dXNlcjpwYXNz_x~y.z', 'Use Basic [REDACTED]'],
+      [`Use Basic ${urlSafe}.`, 'Use Basic [REDACTED].'],
+    ]) {
+      const unsafe = createCapabilityInventory({
+        testedEndpoint: 'https://example.com/mcp',
+        route: 'direct',
+        authentication: 'unauthenticated',
+        statuses,
+        discovered: { tools: [{ name: 'tax', description: 'Safe.' }] },
+      });
+      unsafe.tools.items[0].description = description;
+      expect(() => validateCapabilityInventory(unsafe)).toThrow('unsafe or non-canonical');
+      const redacted = createCapabilityInventory({
+        testedEndpoint: 'https://example.com/mcp',
+        route: 'direct',
+        authentication: 'unauthenticated',
+        statuses,
+        discovered: { tools: [{ name: 'tax', description }] },
+      });
+      expect(redacted.tools.items[0].description).toBe(expected);
+      expect(validateCapabilityInventory(redacted)).toEqual(redacted);
+    }
+    for (const prose of ['Use the basic tax-free allowance.', 'Get basic information.', 'Basic e.g. usage']) {
+      expect(createCapabilityInventory({
+        testedEndpoint: 'https://example.com/mcp',
+        route: 'direct',
+        authentication: 'unauthenticated',
+        statuses,
+        discovered: { tools: [{ name: 'tax', description: prose }] },
+      }).tools.items[0].description).toBe(prose);
+    }
+  });
+
   it('retains only the closed safe projection in deterministic order', () => {
     const inventory = createCapabilityInventory({
       observedAt: '2026-08-17T22:00:00.000Z',

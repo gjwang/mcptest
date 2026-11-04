@@ -400,6 +400,11 @@ describe('generated page metadata', () => {
     inventory.tools.items[0].description = 'Use Basic dXNlcjpwYXNz';
     expect(() => validateCapabilitySnapshots({ 'example-server': inventory }, [server]))
       .toThrow('contains unsanitized data');
+    for (const description of ['Use Basic dXNlcjpwYXNz.', 'Use Basic dXNlcjpwYXNz-', 'Use Basic dXNlcjpwYXNz-suffix']) {
+      inventory.tools.items[0].description = description;
+      expect(() => validateCapabilitySnapshots({ 'example-server': inventory }, [server]))
+        .toThrow('contains unsanitized data');
+    }
   });
 
   it('accepts canonical inventories created from case-distinct argument names', () => {
