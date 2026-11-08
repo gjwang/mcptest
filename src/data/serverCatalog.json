@@ -12906,6 +12906,48 @@
     "homepageUrl": "https://pattorelay.com"
   },
   {
+    "id": "realtycrawl",
+    "name": "RealtyCrawl",
+    "url": "https://realtycrawl.dev/mcp",
+    "description": "Discover real estate capabilities and endpoint schemas, then retrieve source-linked observations with explicit credit budgets. Metadata is public; data calls require a RealtyCrawl API key.",
+    "category": "Search",
+    "tags": [
+      "real-estate",
+      "research",
+      "api",
+      "data"
+    ],
+    "listingSource": {
+      "kind": "publisher",
+      "url": "https://github.com/realtycrawl/realtycrawl-mcp"
+    },
+    "transport": "streamable-http",
+    "requiresOAuth": false,
+    "authType": "none",
+    "alternativeAuthTypes": [
+      "bearer-token"
+    ],
+    "requiredHeaders": [
+      {
+        "name": "Authorization",
+        "description": "User-supplied RealtyCrawl API key for data calls; not required for public metadata.",
+        "valueTemplate": "Bearer <REALTYCRAWL_API_KEY>",
+        "required": false,
+        "secret": true
+      }
+    ],
+    "logoUrl": "/server-logos/realtycrawl.svg",
+    "logoSourceKind": "generated-fallback",
+    "logoRetrievedAt": "2026-11-04",
+    "logoLicenseNote": "Generated R monogram for directory identification; not the official RealtyCrawl mark.",
+    "homepageUrl": "https://realtycrawl.dev",
+    "sourceUrl": "https://github.com/realtycrawl/realtycrawl-mcp",
+    "caveats": [
+      "Metadata discovery is free. Data operations require an API key, credits and explicit request budgets; eligible accounts receive 500 signup credits once.",
+      "Check current capabilities before execution. Research, unavailable and documentation-backed beta entries do not establish verified live source coverage."
+    ]
+  },
+  {
     "id": "repostit",
     "name": "Repostit MCP Connector",
     "url": "https://repostit-mcp-cfjcykgqda-uc.a.run.app/mcp/v1.1",
