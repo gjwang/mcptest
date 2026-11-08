@@ -12858,5 +12858,47 @@
     "logoRetrievedAt": "2026-11-04",
     "logoLicenseNote": "Locally generated PA monogram for a community submission; it is not an official Patto mark.",
     "homepageUrl": "https://pattorelay.com"
+  },
+  {
+    "id": "repostit",
+    "name": "Repostit MCP Connector",
+    "url": "https://repostit-mcp-cfjcykgqda-uc.a.run.app/mcp/v1.1",
+    "browserAccess": "proxy-required",
+    "description": "Creates and schedules social posts and carousels, manages publishing workflows, and checks delivery status. It uses OAuth2 authorization; a Repostit account is required and plan limits apply.",
+    "category": "Automation",
+    "tags": [
+      "automation",
+      "community-submission",
+      "oauth"
+    ],
+    "listingSource": {
+      "kind": "publisher",
+      "url": "https://app.repostit.io/claude-connector.html"
+    },
+    "transport": "streamable-http",
+    "requiresOAuth": true,
+    "authType": "oauth",
+    "oauthRegistration": {
+      "mode": "unknown",
+      "clientId": {
+        "required": false
+      },
+      "clientSecret": {
+        "required": false
+      },
+      "callback": {
+        "required": false,
+        "redirectUrls": {}
+      },
+      "setupSteps": [],
+      "settings": [],
+      "reviewedAt": "2026-11-07",
+      "evidenceUrl": "https://app.repostit.io/claude-connector.html"
+    },
+    "logoUrl": "/server-logos/repostit.svg",
+    "logoSourceKind": "generated-fallback",
+    "logoRetrievedAt": "2026-11-05",
+    "logoLicenseNote": "Locally generated RM monogram for a community submission; it is not an official Repostit MCP Connector mark.",
+    "homepageUrl": "https://app.repostit.io/claude-connector.html"
   }
 ]
