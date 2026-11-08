@@ -12823,12 +12823,12 @@
     "requiresOAuth": false,
     "authType": "none",
     "exactEndpointOnly": true,
-    "browserAccess": "unknown",
+    "browserAccess": "proxy-required",
     "logoUrl": "/server-logos/blockvectra-docs.svg",
     "logoSourceKind": "generated-fallback",
     "logoRetrievedAt": "2026-11-07",
     "logoLicenseNote": "Locally generated BV monogram; it is not an official BlockVectra mark.",
-    "homepageUrl": "https://docs.blockvectra.com/en/guides/mcp-server/?ref=dir-mcptest-docs",
+    "homepageUrl": "https://docs.blockvectra.com/en/guides/mcp-server/",
     "sourceUrl": "https://github.com/blockvectra/mcp",
     "caveats": [
       "This endpoint provides documentation tools only, not JSON-RPC execution or account operations. Browser connectivity has not been verified."
