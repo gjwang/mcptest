@@ -12831,7 +12831,7 @@
     "homepageUrl": "https://docs.blockvectra.com/en/guides/mcp-server/",
     "sourceUrl": "https://github.com/blockvectra/mcp",
     "caveats": [
-      "This endpoint provides documentation tools only, not JSON-RPC execution or account operations. Browser connectivity has not been verified."
+      "This endpoint provides documentation tools only, not JSON-RPC execution or account operations. MCPTest's browser UI requires its proxy: the maintainer reported HTTP 403 for a CORS preflight from https://mcptest.io."
     ]
   }
 ]
