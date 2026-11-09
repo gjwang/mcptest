@@ -13034,7 +13034,7 @@
     "requiresOAuth": false,
     "authType": "none",
     "exactEndpointOnly": true,
-    "browserAccess": "proxy-required",
+    "browserAccess": "direct",
     "logoUrl": "/server-logos/blockvectra-docs.svg",
     "logoSourceKind": "generated-fallback",
     "logoRetrievedAt": "2026-11-07",
@@ -13042,7 +13042,7 @@
     "homepageUrl": "https://docs.blockvectra.com/en/guides/mcp-server/",
     "sourceUrl": "https://github.com/blockvectra/mcp",
     "caveats": [
-      "This endpoint provides documentation tools only, not JSON-RPC execution or account operations. MCPTest's browser UI requires its proxy: the maintainer reported HTTP 403 for a CORS preflight from https://mcptest.io."
+      "This endpoint provides documentation tools only, not JSON-RPC execution or account operations."
     ]
   }
 ]
