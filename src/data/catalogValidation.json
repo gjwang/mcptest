@@ -4189,5 +4189,16 @@
     "message": "Negotiated stateful MCP 2025-11-25 at https://cookierisk.eu/mcp; detected transport streamable-http; authentication none",
     "validatedUrl": "https://cookierisk.eu/mcp",
     "protocolVersion": "2025-11-25"
+  },
+  {
+    "serverId": "agentseo",
+    "status": "online",
+    "transport": "unknown",
+    "authType": "api-key",
+    "requiresOAuth": false,
+    "protocolEra": "unknown",
+    "checkedAt": "2026-11-09T18:10:11.851Z",
+    "message": "Authentication challenge at https://www.agentseo.dev/mcp returned HTTP 401; endpoint was reachable but did not complete an MCP probe; authentication api-key",
+    "validatedUrl": "https://www.agentseo.dev/mcp"
   }
 ]
