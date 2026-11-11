@@ -16,7 +16,29 @@ import {
   type ReleaseGateExitCode,
   type ReleaseGatePolicy,
   type ReleaseGateSeverityThreshold,
+  type ReleaseGateTargetResult,
 } from './releaseGate';
+
+const RESPONSE_CLASS_PRIORITY_IDS: ReadonlySet<string> = new Set([
+  'transport.bot-protection-challenge',
+  'transport.payment-required-402',
+]);
+
+/**
+ * The stdout lines for one target: its result, then bot protection or a
+ * payment wall named with the evidence and what to change, instead of leaving
+ * a bare "blocked" or "unknown".
+ */
+export const formatTargetSummary = (
+  target: Pick<ReleaseGateTargetResult, 'endpoint' | 'status' | 'releaseDecision'>
+): string[] => {
+  const lines = [`${target.endpoint}: ${target.releaseDecision?.status || target.status}`];
+  for (const priority of target.releaseDecision?.priorities || []) {
+    if (!RESPONSE_CLASS_PRIORITY_IDS.has(priority.id)) continue;
+    lines.push(`  ${priority.title}: ${priority.detail}`, `  fix: ${priority.remediation}`);
+  }
+  return lines;
+};
 
 type ArtifactFormat = 'json' | 'markdown' | 'both';
 
@@ -391,8 +413,7 @@ export const runCli = async (
       )}\n`);
     }
 
-    const decision = target.releaseDecision?.status || target.status;
-    process.stdout.write(`${target.endpoint}: ${decision}\n`);
+    for (const line of formatTargetSummary(target)) process.stdout.write(`${line}\n`);
     const toolList = target.report ? toolListConsistencyFromSections(target.report.sections) : undefined;
     if (toolList) {
       const mark = toolList.status === 'consistent' ? 'pass' : toolList.status === 'inconsistent' ? 'finding' : 'not checked';
