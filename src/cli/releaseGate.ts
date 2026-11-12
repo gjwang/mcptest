@@ -19,6 +19,11 @@ import {
   type ReleaseDecision,
   type ReleaseReadinessStatus,
 } from '../utils/releaseReadiness';
+import {
+  createConnectorDirectoryPreflight,
+  serializeConnectorDirectoryPreflightMarkdown,
+  type ConnectorDirectoryPreflightV1,
+} from '../utils/connectorDirectoryPreflight';
 import { formatEstimate, isToolContextCost } from '../utils/toolTokenCost';
 
 export const RELEASE_GATE_EXIT_CODES = {
@@ -61,6 +66,8 @@ export interface ReleaseGateTargetResult {
   report?: PublicReport;
   json?: string;
   markdown?: string;
+  /** Claude and ChatGPT directory checklists derived from the same evaluation. */
+  directoryPreflight?: ConnectorDirectoryPreflightV1;
   error?: string;
 }
 
@@ -473,6 +480,38 @@ export const getReleaseGateThresholdReasons = (
 };
 
 /**
+ * Scrubs observed text (details, evidence, advisory matches) from a preflight. Statuses, counts,
+ * requirement ids and text, and vendor sources are generated locally and kept verbatim.
+ */
+const redactDirectoryPreflightCredentials = (
+  preflight: ConnectorDirectoryPreflightV1,
+  credentials: readonly string[]
+): ConnectorDirectoryPreflightV1 => {
+  if (credentials.length === 0) return preflight;
+  const redact = (value: string) => redactKnownCredentialString(value, credentials);
+  return {
+    ...preflight,
+    directories: preflight.directories.map((result) => ({
+      ...result,
+      items: result.items.map((item) => ({
+        ...item,
+        detail: redact(item.detail),
+        evidence: item.evidence.map(redact),
+      })),
+    })),
+    advisories: preflight.advisories.map((advisory) => ({
+      ...advisory,
+      matches: advisory.matches.map((match) => ({
+        ...match,
+        tool: redact(match.tool),
+        argument: redact(match.argument),
+        values: match.values.map(redact),
+      })),
+    })),
+  };
+};
+
+/**
  * Threshold reason for the optional context-cost gate. An unknown cost (no
  * tool list) is not a failure here; the overall result already reflects it.
  */
@@ -496,7 +535,7 @@ const createReleaseArtifact = (
   generatedAt: string | Date | undefined,
   credentials: readonly string[],
   clientCompatibility = false
-): { decision: ReleaseDecision; report: PublicReport } => {
+): { decision: ReleaseDecision; report: PublicReport; directoryPreflight: ConnectorDirectoryPreflightV1 } => {
   const compatibilityMatrix = createCompatibilityMatrix(evaluation);
   const decision = createReleaseDecision(
     evaluation,
@@ -522,7 +561,13 @@ const createReleaseArtifact = (
     releaseDecision: redactReleaseDecisionCredentials(decision, credentials),
     toolSurfaceAnalysis: publicEvaluation.toolSurfaceAnalysis,
   });
-  return { decision, report };
+  // Verdicts come from the original evaluation: redacting first could rewrite evidence the checks
+  // read (a credential equal to `partial` or `GET`). Observed strings are scrubbed afterwards.
+  const directoryPreflight = redactDirectoryPreflightCredentials(
+    createConnectorDirectoryPreflight(evaluation),
+    credentials
+  );
+  return { decision, report, directoryPreflight };
 };
 
 /** Runs the web evaluator in headless mode, then uses the shared release and report pipeline. */
@@ -571,7 +616,7 @@ export const runReleaseGate = async (
       const evaluation = credentialedTargetOrigin
         ? await withCredentialScopedFetch(credentialedTargetOrigin, fetchFn, evaluate)
         : await evaluate();
-      const { decision, report } = createReleaseArtifact(
+      const { decision, report, directoryPreflight } = createReleaseArtifact(
         evaluation,
         endpoint,
         options.generatedAt,
@@ -594,7 +639,11 @@ export const runReleaseGate = async (
           || redactReleaseDecisionCredentials(decision, credentials),
         report,
         json: serializePublicReportJson(report),
-        markdown: serializePublicReportMarkdown(report),
+        markdown: `${serializePublicReportMarkdown(report).trimEnd()}\n\n${serializeConnectorDirectoryPreflightMarkdown(
+          directoryPreflight,
+          (value) => redactKnownCredentialString(redactReportString(value), credentials)
+        )}`,
+        directoryPreflight,
       });
     } catch (error) {
       const message = redactKnownCredentialString(

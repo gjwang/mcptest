@@ -2,6 +2,8 @@ import {
   TOOL_SURFACE_ANALYSIS_VERSION,
   type ToolSurfaceAnalysisV1,
   type ToolSurfaceAnalyzerInput,
+  type ToolAnnotationRecordV1,
+  type ToolAnnotationSummaryV1,
   type ToolDefinitionSnapshotSetV1,
   type ToolSurfaceDiscoveryCapability,
   type ToolSurfaceEvidenceV1,
@@ -34,6 +36,14 @@ const OVERLAP_PAIR_RETENTION_LIMIT = EVIDENCE_LIMIT;
 const SNAPSHOT_DEFINITION_LIMIT = 500;
 const SNAPSHOT_DEFINITION_BYTE_LIMIT = 64_000;
 const SNAPSHOT_SCHEMA_BYTE_LIMIT = 32_000;
+const ANNOTATION_RECORD_LIMIT = 500;
+const ANNOTATION_BYTE_LIMIT = 10_000;
+// The annotation summary is sized last and only takes the room the rest of the
+// analysis leaves under this target, which keeps the whole analysis below 100 KB.
+const ANALYSIS_BYTE_TARGET = 98_000;
+// `,"toolAnnotations":{"status":"partial","tools":[]}` with headroom.
+const ANNOTATION_SUMMARY_OVERHEAD_BYTES = 64;
+const ANNOTATION_NAME_CHARACTER_LIMIT = 256;
 
 const SEVERITIES: readonly ToolSurfaceSeverity[] = [
   'critical',
@@ -1485,6 +1495,58 @@ const createToolDefinitionSnapshot = (
   };
 };
 
+const ANNOTATION_HINTS = ['readOnlyHint', 'destructiveHint', 'idempotentHint', 'openWorldHint'] as const;
+
+const nonEmptyText = (value: unknown): boolean => typeof value === 'string' && value.trim() !== '';
+
+/**
+ * Records which presentation and safety metadata each tool declared, so the
+ * connector-directory preflight can check titles and hints without the raw
+ * tool list. Only presence and declared booleans are kept, never free text.
+ */
+const createToolAnnotationSummary = (
+  tools: readonly ToolRecord[],
+  expectedToolCount: number,
+  discoveryIncomplete: boolean,
+  toolListStatus: 'present' | 'empty' | 'missing' | 'malformed',
+  byteLimit: number
+): ToolAnnotationSummaryV1 => {
+  const toolListValidated = toolListStatus === 'present' || toolListStatus === 'empty';
+  const records: ToolAnnotationRecordV1[] = [];
+  let retainedBytes = 0;
+  let complete = toolListValidated && !discoveryIncomplete && tools.length === expectedToolCount;
+  for (const tool of tools) {
+    if (!tool.name || !isRecord(tool.raw) || records.length >= ANNOTATION_RECORD_LIMIT) {
+      complete = false;
+      continue;
+    }
+    const annotations = isRecord(tool.raw.annotations) ? tool.raw.annotations : {};
+    const record: ToolAnnotationRecordV1 = {
+      name: tool.name.slice(0, ANNOTATION_NAME_CHARACTER_LIMIT),
+      title: nonEmptyText(tool.raw.title) || nonEmptyText(annotations.title),
+      description: nonEmptyText(tool.raw.description),
+    };
+    for (const hint of ANNOTATION_HINTS) {
+      if (typeof annotations[hint] === 'boolean') record[hint] = annotations[hint];
+    }
+    // One extra byte for the separating comma.
+    const recordBytes = utf8ByteLength(JSON.stringify(record)) + 1;
+    if (retainedBytes + recordBytes > byteLimit) {
+      complete = false;
+      continue;
+    }
+    retainedBytes += recordBytes;
+    records.push(record);
+  }
+  records.sort((left, right) => compareText(left.name, right.name));
+  return {
+    status: !toolListValidated || (expectedToolCount === 0 && discoveryIncomplete)
+      ? 'unavailable'
+      : complete ? 'complete' : 'partial',
+    tools: records,
+  };
+};
+
 const contextSeverity = (toolCount: number, tokenCount: number): ToolSurfaceSeverity | null => {
   if (toolCount >= 100 || tokenCount >= 20_000) return 'high';
   if (toolCount >= 40 || tokenCount >= 8_000) return 'medium';
@@ -2039,7 +2101,7 @@ export function analyzeToolSurface(input: ToolSurfaceAnalyzerInput): ToolSurface
     ? 0
     : round(schemaAccumulator.requiredPropertyCount / totalProperties, 4);
 
-  return {
+  const analysis: ToolSurfaceAnalysisV1 = {
     version: TOOL_SURFACE_ANALYSIS_VERSION,
     metrics: {
       toolListStatus: extracted.status,
@@ -2106,4 +2168,19 @@ export function analyzeToolSurface(input: ToolSurfaceAnalyzerInput): ToolSurface
     findingCount,
     interpretation: 'Findings describe observable context, quality, ambiguity, and capability signals. They do not prove a vulnerability, exploitation, or malicious intent.',
   };
+  // Sized last: the records only use the room the rest of the analysis leaves
+  // under the target. With no room the summary is omitted, which the preflight
+  // reads the same as an unavailable one (its tool checks stay unknown).
+  const remainingBytes = ANALYSIS_BYTE_TARGET
+    - utf8ByteLength(JSON.stringify(analysis))
+    - ANNOTATION_SUMMARY_OVERHEAD_BYTES;
+  if (remainingBytes <= 0) return analysis;
+  analysis.toolAnnotations = createToolAnnotationSummary(
+    tools,
+    extracted.tools.length,
+    extracted.incompleteDiscovery.includes('tools'),
+    extracted.status,
+    Math.min(ANNOTATION_BYTE_LIMIT, remainingBytes)
+  );
+  return analysis;
 }

@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { isOAuthSensitiveKey } from '../utils/transportDetection';
 import { redactReportString } from '../utils/reportArtifact';
+import { summarizeConnectorDirectoryPreflight } from '../utils/connectorDirectoryPreflight';
 import { contextCostSummaryLines, isToolContextCost } from '../utils/toolTokenCost';
 import {
   describeToolListDifference,
@@ -429,6 +430,11 @@ export const runCli = async (
       for (const line of heaviest) process.stdout.write(`    ${redactReportString(line)}\n`);
     }
     for (const reason of target.thresholdReasons) process.stdout.write(`  threshold: ${reason}\n`);
+    if (target.directoryPreflight) {
+      for (const line of summarizeConnectorDirectoryPreflight(target.directoryPreflight)) {
+        process.stdout.write(`  directory: ${redactReportString(line)}\n`);
+      }
+    }
     if (target.error) process.stderr.write(`  infrastructure: ${target.error}\n`);
     for (const path of written) process.stdout.write(`  artifact: ${path}\n`);
   }
